@@ -1,0 +1,1241 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignatureDesigns</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='32' fill='%2300c6ff'/%3E%3Ctext x='50%' y='54%' text-anchor='middle' font-size='32' font-family='Arial, Helvetica, sans-serif' fill='white' font-weight='bold'%3ESD%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- Rocket Loader -->
+    <div id="rocketLoader" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(120deg,#23243a 0%,#2b5876 100%);transition:opacity 0.5s;">
+        <div class="rocket-container">
+            <svg class="rocket-svg" width="80" height="120" viewBox="0 0 80 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Rocket Body -->
+                <rect x="30" y="30" width="20" height="50" rx="10" fill="#fff" stroke="#00c6ff" stroke-width="2"/>
+                <!-- Rocket Nose -->
+                <polygon points="40,10 30,30 50,30" fill="#00c6ff"/>
+                <!-- Rocket Window -->
+                <circle cx="40" cy="45" r="6" fill="#bde0fe" stroke="#0072ff" stroke-width="2"/>
+                <!-- Rocket Fins -->
+                <polygon points="30,80 20,100 30,100" fill="#ff4f81"/>
+                <polygon points="50,80 60,100 50,100" fill="#ff4f81"/>
+                <!-- Rocket Flame -->
+                <g class="rocket-flame">
+                    <polygon points="40,80 35,110 45,110" fill="#ffd700"/>
+                    <polygon points="40,90 38,110 42,110" fill="#ff9800"/>
+                </g>
+            </svg>
+        </div>
+        <style>
+            #rocketLoader {
+                background: linear-gradient(120deg,#23243a 0%,#2b5876 100%);
+            }
+            .rocket-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                animation: rocket-bounce 1.2s infinite;
+            }
+            .rocket-svg {
+                width: 80px;
+                height: 120px;
+                display: block;
+                animation: rocket-float 2s infinite alternate;
+            }
+            .rocket-flame {
+                animation: flame-flicker 0.4s infinite alternate;
+                transform-origin: 40px 80px;
+            }
+            @keyframes rocket-bounce {
+                0% { transform: translateY(0);}
+                50% { transform: translateY(-12px);}
+                100% { transform: translateY(0);}
+            }
+            @keyframes rocket-float {
+                0% { transform: translateY(0);}
+                100% { transform: translateY(-8px);}
+            }
+            @keyframes flame-flicker {
+                0% { opacity: 1; transform: scaleY(1);}
+                100% { opacity: 0.7; transform: scaleY(1.15);}
+            }
+            @media (max-width:600px) {
+                .rocket-svg { width: 48px; height: 72px;}
+            }
+            @media (max-width:400px) {
+                .rocket-svg { width: 36px; height: 54px;}
+            }
+        </style>
+    </div>
+    <script>
+        // Hide loader after 2 seconds
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const loader = document.getElementById('rocketLoader');
+                if(loader){
+                    loader.style.opacity = '0';
+                    setTimeout(()=>{ loader.style.display = 'none'; }, 500);
+                }
+            }, 2000);
+        });
+    </script>
+
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursorFollower"></div>
+
+
+    <!-- Sparkle Background Animation -->
+    <canvas id="sparkle-bg" style="position:fixed;top:0;left:0;width:100vw;height:100vh;pointer-events:none;z-index:0;"></canvas>
+    <script>
+    (function() {
+        const canvas = document.getElementById('sparkle-bg');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let dpr = window.devicePixelRatio || 1;
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Sparkle properties
+        const isMobile = () => window.innerWidth <= 600;
+        function sparkleCount() {
+            return isMobile() ? 24 : 48;
+        }
+        function sparkleSize() {
+            return isMobile() ? [0.7, 1.7] : [1, 2.2];
+        }
+        let sparkles = [];
+        function createSparkles() {
+            sparkles = [];
+            const [minSize, maxSize] = sparkleSize();
+            for (let i = 0; i < sparkleCount(); i++) {
+                const size = Math.random() * (maxSize - minSize) + minSize;
+                sparkles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    size,
+                    speed: 0.12 + Math.random() * 0.18,
+                    angle: Math.random() * Math.PI * 2,
+                    twinkle: Math.random() * Math.PI * 2,
+                    color: Math.random() > 0.7 ? '#fffbe6' : (Math.random() > 0.5 ? '#bde0fe' : '#fff')
+                });
+            }
+        }
+        createSparkles();
+        window.addEventListener('resize', createSparkles);
+
+        function drawSparkle(s) {
+            ctx.save();
+            ctx.globalAlpha = 0.65 + 0.35 * Math.sin(Date.now()/600 + s.twinkle);
+            ctx.translate(s.x, s.y);
+            ctx.rotate(s.angle);
+            // Draw a simple 4-pointed sparkle
+            ctx.beginPath();
+            ctx.moveTo(0, -s.size * 3);
+            ctx.lineTo(0, s.size * 3);
+            ctx.moveTo(-s.size * 3, 0);
+            ctx.lineTo(s.size * 3, 0);
+            ctx.strokeStyle = s.color;
+            ctx.lineWidth = s.size;
+            ctx.shadowColor = s.color;
+            ctx.shadowBlur = 6 + s.size * 2;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, width, height);
+            for (let s of sparkles) {
+                s.y += s.speed;
+                s.x += Math.sin(Date.now()/1200 + s.twinkle) * 0.13;
+                if (s.y > height + 8) {
+                    s.y = -8;
+                    s.x = Math.random() * width;
+                }
+                drawSparkle(s);
+            }
+            requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+    </script>
+
+    <!-- Animated Background -->
+    <!-- <div class="bg-animation" id="bgAnimation"></div>
+
+        Floating Heart Button
+        <div id="floatingHeart" title="Click to view info">
+            <svg width="48" height="44" viewBox="0 0 48 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M24 41.5C23.2 41.5 22.4 41.23 21.77 40.73C13.13 33.77 6 27.97 6 20.5C6 14.7 10.7 10 16.5 10C19.54 10 22.41 11.53 24 13.97C25.59 11.53 28.46 10 31.5 10C37.3 10 42 14.7 42 20.5C42 27.97 34.87 33.77 26.23 40.73C25.6 41.23 24.8 41.5 24 41.5Z" fill="#ff4f81" stroke="#fff" stroke-width="2"/>
+            </svg>
+        </div> -->
+        <!-- Heart Info Modal -->
+        <!-- <div id="heartInfoModal" style="display:none;">
+            <div class="heart-modal-content">
+                <button id="closeHeartModal" title="Close">&times;</button>
+                <h3>About Me</h3>
+                <p style="margin-bottom:0.7em;">Hi, I'm the creator of Signature Designs!<br>
+                <b>Name:</b> Mohamed<br>
+                <b>Email:</b> mmoham949@gmail.com<br>
+                <b>Location:</b> Chennai, India</p>
+                <p style="font-size:0.97em;color:#bde0fe;">Let's connect and create something amazing together!</p>
+            </div>
+        </div> -->
+        <!-- <style>
+        #floatingHeart {
+            position: fixed;
+            bottom: 32px;
+            left: 32px;
+            z-index: 1200;
+            cursor: grab;
+            width: 48px;
+            height: 44px;
+            background: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 16px rgba(255,79,129,0.13);
+            transition: box-shadow 0.2s, transform 0.2s;
+            animation: floatHeart 2.5s ease-in-out infinite alternate;
+            user-select: none;
+            touch-action: none;
+        }
+        #floatingHeart:active {
+            cursor: grabbing;
+            box-shadow: 0 2px 8px rgba(255,79,129,0.18);
+            transform: scale(0.97);
+        }
+        @keyframes floatHeart {
+            0% { transform: translateY(0);}
+            100% { transform: translateY(-12px);}
+        }
+        #heartInfoModal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+            z-index: 1300;
+            background: rgba(44,62,80,0.97);
+            border-radius: 1.2em;
+            box-shadow: 0 8px 32px rgba(31,38,135,0.18);
+            padding: 2em 2.5em 1.5em 2.5em;
+            color: #fff;
+            min-width: 260px;
+            max-width: 90vw;
+            text-align: center;
+            font-family: inherit;
+            animation: popHeartModal 0.3s;
+        }
+        @keyframes popHeartModal {
+            0% { transform: translate(-50%,-50%) scale(0.8);}
+            100% { transform: translate(-50%,-50%) scale(1);}
+        }
+        .heart-modal-content {
+            position: relative;
+        }
+        #closeHeartModal {
+            position: absolute;
+            top: 0.5em;
+            right: 1em;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            cursor: pointer;
+            opacity: 0.7;
+            font-weight: bold;
+            z-index: 2;
+            line-height: 1;
+            transition: opacity 0.2s;
+        }
+        #closeHeartModal:hover {
+            opacity: 1;
+        }
+        @media (max-width:600px) {
+            #floatingHeart {
+                left: 12px;
+                bottom: 12px;
+                width: 38px;
+                height: 34px;
+            }
+            #heartInfoModal {
+                padding: 1.2em 0.7em 1em 0.7em;
+                min-width: 0;
+            }
+        }
+        </style> -->
+        <!-- <script>
+        (function(){
+            // Drag logic for floatingHeart
+            const heart = document.getElementById('floatingHeart');
+            let isDragging = false, startX, startY, origX, origY, offsetX = 0, offsetY = 0;
+            let lastTouch = null;
+
+            function setHeartPos(x, y) {
+                heart.style.left = x + 'px';
+                heart.style.top = y + 'px';
+                heart.style.right = '';
+                heart.style.bottom = '';
+                heart.style.position = 'fixed';
+                heart.style.margin = '0';
+            }
+            function onDragStart(e) {
+                isDragging = true;
+                heart.style.transition = 'none';
+                if (e.type === 'touchstart') {
+                    lastTouch = e.touches[0];
+                    startX = lastTouch.clientX;
+                    startY = lastTouch.clientY;
+                } else {
+                    startX = e.clientX;
+                    startY = e.clientY;
+                }
+                const rect = heart.getBoundingClientRect();
+                origX = rect.left;
+                origY = rect.top;
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('mouseup', onDragEnd);
+                document.addEventListener('touchmove', onDragMove, {passive:false});
+                document.addEventListener('touchend', onDragEnd);
+            }
+            function onDragMove(e) {
+                if (!isDragging) return;
+                let clientX, clientY;
+                if (e.type === 'touchmove') {
+                    lastTouch = e.touches[0];
+                    clientX = lastTouch.clientX;
+                    clientY = lastTouch.clientY;
+                    e.preventDefault();
+                } else {
+                    clientX = e.clientX;
+                    clientY = e.clientY;
+                }
+                offsetX = clientX - startX;
+                offsetY = clientY - startY;
+                setHeartPos(origX + offsetX, origY + offsetY);
+            }
+            function onDragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                heart.style.transition = '';
+                document.removeEventListener('mousemove', onDragMove);
+                document.removeEventListener('mouseup', onDragEnd);
+                document.removeEventListener('touchmove', onDragMove);
+                document.removeEventListener('touchend', onDragEnd);
+            }
+            heart.addEventListener('mousedown', onDragStart);
+            heart.addEventListener('touchstart', onDragStart, {passive:false});
+
+            // Modal logic
+            const modal = document.getElementById('heartInfoModal');
+            const closeBtn = document.getElementById('closeHeartModal');
+            heart.addEventListener('click', function(e){
+                if(isDragging) return; // Prevent click after drag
+                modal.style.display = 'block';
+            });
+            closeBtn.addEventListener('click', function(){
+                modal.style.display = 'none';
+            });
+            window.addEventListener('click', function(e){
+                if(e.target === modal) modal.style.display = 'none';
+            });
+        })();
+        </script>  -->
+
+
+
+        
+    <!-- 3D Model Viewer Section
+    <section id="model-viewer-section" style="width:100%;max-width:600px;margin:2.5em auto 1.5em auto;display:flex;flex-direction:column;align-items:center;z-index:10;">
+        <h2 style="color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.13);margin-bottom:0.7em;font-size:1.3em;">Try Our 3D Logo!</h2>
+        <model-viewer 
+            src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+            alt="3D Logo Model" 
+            ar 
+            auto-rotate 
+            camera-controls 
+            style="width:100%;max-width:350px;height:350px;background:rgba(34,40,49,0.13);border-radius:1em;box-shadow:0 4px 24px rgba(0,0,0,0.10);"
+            shadow-intensity="1"
+            exposure="1.1"
+            interaction-prompt="auto"
+            poster="https://modelviewer.dev/assets/poster-astronaut.png"
+            loading="eager">
+        </model-viewer>
+        <small style="color:#dbeafe;margin-top:0.5em;">Rotate, zoom, and play with the 3D model!</small>
+    </section>
+    3D Model Viewer Polyfill -->
+    <!-- <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script> -->
+    
+    
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-container">
+            <div class="logo-3d draggable-logo" id="draggableLogo" style="animation: rotateLogo 2.5s linear infinite; touch-action: none;">SD</div>
+            <style>
+            @keyframes rotateLogo {
+                0% { transform: rotateY(0deg);}
+                100% { transform: rotateY(360deg);}
+            }
+            .draggable-logo {
+                cursor: grab;
+                position: relative;
+                z-index: 1004;
+                transition: left 0.3s, top 0.3s;
+                user-select: none;
+                touch-action: none;
+            }
+            @media (max-width: 600px) {
+                .draggable-logo {
+                    font-size: 1.3em;
+                }
+            }
+            </style>
+            <script>
+            (function() {
+                const logo = document.getElementById('draggableLogo');
+                const navContainer = logo.parentElement;
+                let isDragging = false, startX, startY, origX, origY, offsetX = 0, offsetY = 0;
+                let lastTouch = null;
+
+                function getNavRect() {
+                    return navContainer.getBoundingClientRect();
+                }
+
+                function setLogoPos(x, y) {
+                    logo.style.position = 'fixed';
+                    logo.style.left = x + 'px';
+                    logo.style.top = y + 'px';
+                    logo.style.margin = '0';
+                }
+
+                function resetLogo() {
+                    logo.style.position = '';
+                    logo.style.left = '';
+                    logo.style.top = '';
+                    logo.style.margin = '';
+                    logo.style.transition = 'left 0.3s, top 0.3s';
+                }
+
+                function onDragStart(e) {
+                    isDragging = true;
+                    logo.style.transition = 'none';
+                    if (e.type === 'touchstart') {
+                        lastTouch = e.touches[0];
+                        startX = lastTouch.clientX;
+                        startY = lastTouch.clientY;
+                    } else {
+                        startX = e.clientX;
+                        startY = e.clientY;
+                    }
+                    const rect = logo.getBoundingClientRect();
+                    origX = rect.left;
+                    origY = rect.top;
+                    document.addEventListener('mousemove', onDragMove);
+                    document.addEventListener('mouseup', onDragEnd);
+                    document.addEventListener('touchmove', onDragMove, {passive:false});
+                    document.addEventListener('touchend', onDragEnd);
+                }
+
+                function onDragMove(e) {
+                    if (!isDragging) return;
+                    let clientX, clientY;
+                    if (e.type === 'touchmove') {
+                        lastTouch = e.touches[0];
+                        clientX = lastTouch.clientX;
+                        clientY = lastTouch.clientY;
+                        e.preventDefault();
+                    } else {
+                        clientX = e.clientX;
+                        clientY = e.clientY;
+                    }
+                    offsetX = clientX - startX;
+                    offsetY = clientY - startY;
+                    setLogoPos(origX + offsetX, origY + offsetY);
+                }
+
+                function onDragEnd() {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    resetLogo();
+                    document.removeEventListener('mousemove', onDragMove);
+                    document.removeEventListener('mouseup', onDragEnd);
+                    document.removeEventListener('touchmove', onDragMove);
+                    document.removeEventListener('touchend', onDragEnd);
+                }
+
+                logo.addEventListener('mousedown', onDragStart);
+                logo.addEventListener('touchstart', onDragStart, {passive:false});
+            })();
+            </script>
+            <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false" type="button">
+            <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+            <li><a href="#home" onclick="closeMenu()">Home</a></li>
+            <li><a href="#about" onclick="closeMenu()">About</a></li>
+            <li><a href="#services" onclick="closeMenu()">Services</a></li>
+            <li><a href="#portfolio" onclick="closeMenu()">Portfolio</a></li>
+            <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+            </ul>
+        </div>
+        <style>
+            #navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1002;
+            background: linear-gradient(90deg, #23243a 0%, #2b5876 100%);
+            box-shadow: 0 2px 16px rgba(0,0,0,0.09);
+            }
+            .nav-container {
+            display: flex;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.5em 1.5em;
+            }
+            .logo-3d {
+            font-size: 1.7em;
+            font-weight: bold;
+            color: #fff;
+            letter-spacing: 0.07em;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.13);
+            user-select: none;
+            }
+            .nav-links {
+            display: flex;
+            gap: 1.2em;
+            margin-left: auto;
+            list-style: none;
+            align-items: center;
+            }
+            .nav-links li {
+            display: inline-block;
+            }
+            .nav-links a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.08em;
+            padding: 0.4em 0.7em;
+            border-radius: 0.4em;
+            transition: background 0.18s;
+            }
+            .nav-links a:hover,
+            .nav-links a:focus {
+            background: rgba(255,255,255,0.09);
+            }
+            .hamburger {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1003;
+            margin-left: auto;
+            }
+            .hamburger span {
+            display: block;
+            height: 4px;
+            width: 28px;
+            background: #fff;
+            margin: 5px 0;
+            border-radius: 2px;
+            transition: 0.3s;
+            }
+            @media (max-width: 900px) {
+            .nav-links {
+                gap: 0.7em;
+            }
+            }
+            @media (max-width: 700px) {
+            .nav-links {
+                gap: 0.4em;
+            }
+            }
+            @media (max-width: 600px) {
+            .hamburger {
+                display: flex;
+            }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                width: 70vw;
+                max-width: 320px;
+                background: rgba(34, 40, 49, 0.98);
+                box-shadow: -2px 0 18px rgba(0,0,0,0.13);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 4.5em 1.5em 2em 1.5em;
+                transform: translateX(100%);
+                transition: transform 0.3s cubic-bezier(.77,0,.18,1);
+                z-index: 1002;
+                gap: 1.2em;
+            }
+            .nav-links.open {
+                transform: translateX(0);
+            }
+            .nav-links li {
+                width: 100%;
+            }
+            .nav-links a {
+                font-size: 1.15em;
+                color: #fff;
+                display: block;
+                padding: 0.7em 0;
+                width: 100%;
+                border-bottom: 1px solid rgba(255,255,255,0.07);
+            }
+            .logo-3d {
+                z-index: 1004;
+            }
+            }
+        </style>
+        <script>
+            // Make sure this script is not duplicated elsewhere!
+            document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburgerBtn');
+            const navLinks = document.getElementById('navLinks');
+            window.closeMenu = function() {
+                if(window.innerWidth <= 600) {
+                navLinks.classList.remove('open');
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            }
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const isOpen = navLinks.classList.toggle('open');
+                hamburgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            }
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if(window.innerWidth <= 600 && navLinks.classList.contains('open')) {
+                if(!navLinks.contains(e.target) && e.target !== hamburgerBtn) {
+                    navLinks.classList.remove('open');
+                    hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+                }
+            });
+            // Close menu on resize if desktop
+            window.addEventListener('resize', function() {
+                if(window.innerWidth > 600) {
+                navLinks.classList.remove('open');
+                hamburgerBtn.setAttribute('aria-expanded', 'false');
+                }
+            });
+            });
+        </script>
+        </nav>
+
+
+    <!-- Announcement Bar -->
+    <!-- <div id="announcementBar" style="width:100%;background:linear-gradient(90deg,#00c6ff 0%,#0072ff 100%);color:#fff;text-align:center;padding:0.7em 0;font-size:1.08em;letter-spacing:0.02em;position:fixed;top:0;left:0;z-index:9999;box-shadow:0 2px 16px rgba(0,0,0,0.09);transition:top 0.3s;">
+        <span class="announcement-text" style="margin-right:1.2em;display:inline-block;">🎉 <strong>Limited Time Offer:</strong> Get 15% OFF on your first design project! Use code <b>SD15</b> at contact.</span>
+        <button id="closeAnnouncement" style="background:transparent;border:none;color:#fff;font-size:1.2em;cursor:pointer;opacity:0.7;vertical-align:middle;">&times;</button>
+    </div> -->
+    <!-- <script>
+    document.addEventListener('DOMContentLoaded',function(){
+        var bar=document.getElementById('announcementBar');
+        var btn=document.getElementById('closeAnnouncement');
+        if(btn&&bar){
+            btn.onclick=function(){bar.style.top='-60px';setTimeout(()=>{bar.style.display='none';},350);}
+        }
+        // Responsive margin for body
+        function setBodyMargin(){
+            if(window.innerWidth<=600){
+                document.body.style.marginTop='38px';
+            }else{
+                document.body.style.marginTop='48px';
+            }
+        }
+        setBodyMargin();
+        window.addEventListener('resize',setBodyMargin);
+    });
+    </script> -->
+    <!-- <style>
+    #announcementBar {
+        font-size: 1.08em;
+        padding: 0.7em 0;
+        word-break: break-word;
+    }
+    @media (max-width: 900px) {
+        #announcementBar {
+            font-size: 1em;
+            padding: 0.6em 0;
+        }
+    }
+    @media (max-width:600px){
+        #announcementBar {
+            font-size:0.97em;
+            padding:0.5em 0;
+        }
+        #announcementBar .announcement-text {
+            display:block;
+            margin-right:0;
+            padding:0 0.7em;
+        }
+        #closeAnnouncement {
+            position:absolute;
+            right:0.7em;
+            top:0.3em;
+            font-size:1.3em;
+        }
+    }
+    </style>  -->
+    <!-- Glassmorphism Floating Card -->
+    <div class="glass-card" id="glassCard">
+        <button class="glass-card-close" id="glassCardClose" title="Minimize">&times;</button>
+        <h3>Why Choose Us?</h3>
+        <ul>
+            <li>24/7 Design Availability</li>
+            <li>Creative & Passionate Team</li>
+            <li>Fast Turnaround</li>
+            <li>Affordable Pricing</li>
+        </ul>
+    </div>
+    <style>
+    .glass-card {
+        position: fixed;
+        top: 90px;
+        right: 40px;
+        z-index: 100;
+        background: rgba(44, 62, 80, 0.35);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 1.2em;
+        border: 1.5px solid rgba(255,255,255,0.18);
+        padding: 1.5em 2em;
+        color: #fff;
+        min-width: 220px;
+        max-width: 300px;
+        font-family: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+        animation: floatCard 3s ease-in-out infinite alternate;
+    }
+    .glass-card-close {
+        position: absolute;
+        top: 0.7em;
+        right: 1em;
+        background: transparent;
+        border: none;
+        color: #fff;
+        font-size: 1.3em;
+        cursor: pointer;
+        font-weight: bold;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        z-index: 2;
+        line-height: 1;
+    }
+    .glass-card-close:hover {
+        opacity: 1;
+    }
+    .glass-card h3 {
+        margin-top: 0;
+        margin-bottom: 0.7em;
+        font-size: 1.25em;
+        letter-spacing: 0.03em;
+        font-weight: 700;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .glass-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .glass-card li {
+        margin-bottom: 0.5em;
+        padding-left: 1.1em;
+        position: relative;
+        font-size: 1em;
+    }
+    .glass-card li:before {
+        content: "★";
+        position: absolute;
+        left: 0;
+        color: #00c6ff;
+        font-size: 1em;
+        top: 0;
+    }
+    @keyframes floatCard {
+        0% { transform: translateY(0px) scale(1);}
+        100% { transform: translateY(-18px) scale(1.03);}
+    }
+    @media (max-width: 900px) {
+        .glass-card {
+            right: 10px;
+            top: 80px;
+            padding: 1em 1.2em;
+            min-width: 160px;
+            font-size: 0.97em;
+        }
+    }
+    @media (max-width: 600px) {
+        .glass-card {
+            display: none !important;
+        }
+    }
+    </style>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var closeBtn = document.getElementById('glassCardClose');
+        var card = document.getElementById('glassCard');
+        if (closeBtn && card) {
+            closeBtn.addEventListener('click', function() {
+                card.style.display = 'none';
+            });
+        }
+    });
+    </script> <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Signature Designs</h1>
+            <p>You Think, We Design</p>
+            <a href="#contact" class="cta-button">Start Your Project</a>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about">
+        <h2 class="section-title">About Us</h2>
+        <div class="about-content">
+            <p class="about-glass-bg">Signature Designs is an idea you can get a design from wherever and whenever no specific time period and holidays. We have a dedicated group of people who engage themselves in designing careers, bringing your creative visions to life with passion and expertise.</p>
+            <style>
+            .about-glass-bg {
+                background: rgba(44, 62, 80, 0.38);
+                box-shadow: 0 4px 24px 0 rgba(31,38,135,0.13);
+                backdrop-filter: blur(7px);
+                -webkit-backdrop-filter: blur(7px);
+                border-radius: 1em;
+                border: 1.2px solid rgba(255,255,255,0.15);
+                padding: 1.1em 1.5em;
+                color: #e0eaff;
+                font-size: 1.08em;
+                margin-bottom: 1.2em;
+                transition: box-shadow 0.2s, transform 0.2s;
+            }
+            @media (max-width: 600px) {
+                .about-glass-bg {
+                    padding: 0.7em 0.7em;
+                    font-size: 1em;
+                    border-radius: 0.7em;
+                }
+            }
+            </style> </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services">
+        <h2 class="section-title">Our Services</h2>
+        <div class="services-grid">
+            <div class="service-card"><h3>Photo Design</h3><p>Professional photo editing and enhancement services for all your visual needs.</p></div>
+            <div class="service-card"><h3>Event Design</h3><p>Creative designs for all your special events and celebrations.</p></div>
+            <div class="service-card"><h3>Logo Design</h3><p>Unique brand identity and logo creation that represents your business.</p></div>
+            <div class="service-card"><h3>Poster Design</h3><p>Eye-catching posters for marketing campaigns and promotional events.</p></div>
+            <div class="service-card"><h3>Name Board Designs</h3><p>Professional signage and name board solutions for your business.</p></div>
+            <div class="service-card"><h3>Visiting Card Design</h3><p>Professional business card designs that make lasting impressions.</p></div>
+            <div class="service-card"><h3>Flex Vinyl Design</h3><p>Large format printing and vinyl designs for advertising and signage.</p></div>
+            <div class="service-card"><h3>Social Media Design</h3><p>Engaging social media graphics and posts that boost your online presence.</p></div>
+            <div class="service-card"><h3>YouTube Thumbnail Design</h3><p>Click-worthy thumbnail designs that increase your YouTube video views.</p></div>
+            <div class="service-card"><h3>Book Design</h3><p>Complete book layout and cover design services for authors and publishers.</p></div>
+        </div>
+    </section>
+
+        <!-- Portfolio Section -->
+        <section id="portfolio">
+            <h2 class="section-title">Our Work</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <!-- Example image, replace src with your image -->
+                        <img src="mockup (2).png" alt="Logo Design featuring bold stylized initials SD in a modern graphic style, centered on a clean background. The logo is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio image area, with no visible borders or padding." />
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="Untitled design.png" alt="Logo Design featuring bold stylized initials SD in a modern graphic style, centered on a clean background. The logo is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio image area, with no visible borders or padding." />
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="Untitled design (1).png" alt="Logo Design with stylized SD initials in a modern, bold graphic style, centered on a clean background. The design is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio area with no visible borders or padding." />
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="Untitled design (2).png" alt="Logo Design with bold stylized SD initials in a modern graphic style, centered on a clean background. The design is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio area with no visible borders or padding." />
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="Untitled design (3).png" alt="Logo Design with bold stylized SD initials in a modern, creative graphic style, centered on a clean background. The design is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio area with no visible borders or padding." />
+                    </div>
+                </div>
+                <div class="portfolio-item">
+                    <div class="portfolio-image">
+                        <img src="Untitled design (4).png" alt="Logo Design with bold stylized SD initials in a modern, creative graphic style, centered on a clean background. The design is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio area with no visible borders or padding." />
+                    </div>
+                </div>
+            </div>
+        </section>
+        <style>
+        #portfolio {
+            padding: 3em 0 2em 0;
+            /* background removed */
+            background: none;
+        }
+        #portfolio .section-title {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 1.5em;
+            font-size: 1.5em;
+            letter-spacing: 0.04em;
+        }
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5em;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1em;
+        }
+        .portfolio-item {
+            /* background removed */
+            background: none;
+            border-radius: 1em;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+            transition: transform 0.18s, box-shadow 0.18s;
+            position: relative;
+            aspect-ratio: 4/3;
+            display: flex;
+            align-items: stretch;
+        }
+        .portfolio-item:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+        }
+        .portfolio-image {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        .portfolio-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transition: transform 0.25s;
+        }
+        .portfolio-item:hover .portfolio-image img {
+            transform: scale(1.04);
+        }
+        @media (max-width: 900px) {
+            .portfolio-grid {
+                gap: 1em;
+            }
+        }
+        @media (max-width: 600px) {
+            #portfolio {
+                padding: 2em 0 1em 0;
+            }
+            .portfolio-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.7em;
+                padding: 0 0.3em;
+            }
+            .portfolio-item {
+                border-radius: 0.7em;
+            }
+        }
+        </style>
+        <!-- Portfolio Section -->
+    <!-- <section id="portfolio">
+        <h2 class="section-title">Our Work</h2> -->
+        <!-- <div class="portfolio-grid">
+            <div class="portfolio-item">
+                <div class="portfolio-image"> -->
+                    <!-- Replace src with your image in the future -->
+                    <!-- <img src="images/mockup (2).png" alt="Photo Design Work" style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;" />
+                </div>
+                <div class="portfolio-caption">Photo Design Work</div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    <img src="Images/Untitled design.png" alt="Logo Design featuring bold stylized initials SD in a modern graphic style, centered on a clean background. The logo is vibrant and professional, conveying creativity and trust. The image fills the entire portfolio image area, with no visible borders or padding." style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;" />
+                </div>
+                <div class="portfolio-caption">Logo Design Work</div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    <img src="images/social-media-design-placeholder.jpg" alt="Social Media Design" />
+                </div>
+                <div class="portfolio-caption">Social Media Design</div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    <img src="images/customer logo 4.png" alt="Event Design featuring a custom logo with bold, modern elements, fully covering the portfolio image area. The design is vibrant and professional, set against a clean background, conveying a creative and celebratory atmosphere." style="width:100%;height:100%;object-fit:cover;display:block;position:absolute;top:0;left:0;" />
+                </div>
+                <div class="portfolio-caption">Event Design Work</div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    <img src="images/poster-design-placeholder.jpg" alt="Poster Design Work" />
+                </div>
+                <div class="portfolio-caption">Poster Design Work</div>
+            </div>
+            <div class="portfolio-item">
+                <div class="portfolio-image">
+                    <img src="images/book-design-placeholder.jpg" alt="Book Design Work" />
+                </div>
+                <div class="portfolio-caption">Book Design Work</div>
+            </div>
+        </div> -->
+    <!-- </section> -->
+    <!-- Personal Info Section -->
+    <section id="personal-info" style="margin:3em auto 2em auto;max-width:420px;display:flex;flex-direction:column;align-items:center;z-index:10;">
+        <div class="personal-card cool-font">
+            <!-- <div class="personal-avatar">
+                <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+                    <circle cx="36" cy="36" r="36" fill="#00c6ff"/>
+                    <text x="50%" y="56%" text-anchor="middle" font-size="2.1em" font-family="Arial, Helvetica, sans-serif" fill="#fff" font-weight="bold">M</text>
+                </svg>
+            </div> -->
+            <h3>Ashar</h3>
+            <p class="personal-role">Designer</p>
+            <ul class="personal-list">
+                <li><b>Email:</b> <a href="mailto:signaturedesignschn@gmail.com">signaturedesignschn@gmail.com</a></li>
+                <li><b>Location:</b> Chennai, India</li>
+            </ul>
+            <p class="personal-desc">Hi! I love turning ideas into visuals and helping brands stand out. Let's connect and create something amazing together!</p>
+            <div class="personal-socials">
+                <a href="mailto:signaturedesignschn@gmail.com" title="Email" class="personal-social-link">
+                    <svg width="22" height="22" fill="none" viewBox="0 0 22 22"><rect width="22" height="22" rx="6" fill="#2b5876"/><path d="M5 7.5v7a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-7a1 1 0 0 0-1-1H6a1 1 0 0 0-1 1zm1 0 5 4 5-4" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </a>
+                <a href="tel:+91 9962375909" title="Call" class="personal-social-link">
+                    <svg width="22" height="22" fill="none" viewBox="0 0 22 22">
+                        <rect width="22" height="22" rx="6" fill="#2b5876"/>
+                        <path d="M7.5 6.5a1 1 0 0 1 1-1h5a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-9z" stroke="#fff" stroke-width="1.5"/>
+                        <circle cx="11" cy="14.5" r="0.8" fill="#fff"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    <style>
+    #personal-info {
+        width: 100%;
+    }
+    .personal-card {
+        background: rgba(44, 62, 80, 0.38);
+        box-shadow: 0 8px 32px 0 rgba(31,38,135,0.18);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 1.2em;
+        border: 1.5px solid rgba(255,255,255,0.18);
+        padding: 2em 2.2em 1.5em 2.2em;
+        color: #fff;
+        text-align: center;
+        font-family: inherit;
+        margin: 0 auto;
+        max-width: 340px;
+        transition: box-shadow 0.2s, transform 0.2s;
+        animation: floatCard 3s ease-in-out infinite alternate;
+    }
+    .personal-avatar {
+        width: 72px;
+        height: 72px;
+        margin: 0 auto 0.7em auto;
+        border-radius: 50%;
+        box-shadow: 0 2px 12px rgba(0,198,255,0.13);
+        background: linear-gradient(120deg,#00c6ff 0%,#2b5876 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .personal-card h3 {
+        margin: 0.2em 0 0.1em 0;
+        font-size: 1.25em;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: #fff;
+    }
+    .personal-role {
+        color: #bde0fe;
+        font-size: 1em;
+        margin-bottom: 0.7em;
+        font-weight: 500;
+    }
+    .personal-list {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 0.7em 0;
+        font-size: 0.98em;
+    }
+    .personal-list li {
+        margin-bottom: 0.3em;
+    }
+    .personal-list a {
+        color: #00c6ff;
+        text-decoration: none;
+        transition: text-decoration 0.2s;
+    }
+    .personal-list a:hover {
+        text-decoration: underline;
+    }
+    .personal-desc {
+        font-size: 0.99em;
+        color: #e0eaff;
+        margin-bottom: 1em;
+        margin-top: 0.5em;
+    }
+    .personal-socials {
+        display: flex;
+        justify-content: center;
+        gap: 1.1em;
+        margin-top: 0.2em;
+    }
+    .personal-social-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border-radius: 50%;
+        transition: background 0.2s, box-shadow 0.2s;
+        width: 36px;
+        height: 36px;
+        box-shadow: 0 2px 8px rgba(0,198,255,0.07);
+    }
+    .personal-social-link:hover {
+        background: linear-gradient(90deg,#00c6ff 0%,#2b5876 100%);
+        box-shadow: 0 4px 16px rgba(0,198,255,0.13);
+    }
+    @media (max-width: 900px) {
+        .personal-card {
+            padding: 1.2em 1em 1em 1em;
+            max-width: 98vw;
+        }
+        .personal-avatar {
+            width: 56px;
+            height: 56px;
+        }
+    }
+    @media (max-width: 600px) {
+        #personal-info {
+            margin: 2em auto 1em auto;
+        }
+        .personal-card {
+            padding: 1em 0.5em 0.7em 0.5em;
+            border-radius: 0.8em;
+        }
+    }
+    </style>
+    <!-- Contact Section -->
+    <section id="contact">
+        <h2 class="section-title">Get In Touch</h2>
+        <section class="contact-form">
+            <form class="contact-form" id="contactForm" action="mailto:signaturedesignschn@gmail.com" method="POST" enctype="text/plain">
+                <div class="form-group">
+                    <input type="text" name="name" placeholder="Your Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="Your Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" name="project_type" placeholder="Project Type">
+                </div>
+                <div class="form-group">
+                    <textarea rows="5" name="message" placeholder="Tell us about your project" required></textarea>
+                </div>
+                <button type="submit" class="cta-button">Send Message</button>
+                <div id="formMsg" style="margin-top:1em;"></div>
+            </form>
+            <!-- Google Embedded Map -->
+            <div class="map-container" style="width:100%; max-width:420px; margin:2em auto 0 auto; border-radius:1em; overflow:hidden; box-shadow:0 4px 24px rgba(0,0,0,0.10); border: 3px solid #2b5876;">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3890.964838801274!2d80.2652733148222!3d13.07066871672625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5265e2e5e3e6e9%3A0x7e6e6e6e6e6e6e6e!2s34%2C%20Adithanar%20Rd%2C%20Pudupet%2C%20Komaleeswaranpet%2C%20Egmore%2C%20Chennai%2C%20Tamil%20Nadu%20600002!5e0!3m2!1sen!2sin!4v1718031234567!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="220" 
+                    style="border:0; display:block;"
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade"
+                    title="Signature Designs Location"></iframe>
+            </div>
+            <style>
+                .map-container {
+                    background: linear-gradient(90deg, #23243a 0%, #2b5876 100%);
+                    transition: box-shadow 0.2s;
+                }
+                @media (max-width: 600px) {
+                    .map-container {
+                        max-width:98vw;
+                        border-radius:0.7em;
+                    }
+                    .map-container iframe {
+                        height: 160px;
+                    }
+                }
+            </style>
+            <!-- Popup Message -->
+            <div id="popupMsg" style="display:none; position:fixed; left:50%; top:10%; transform:translateX(-50%); min-width:280px; max-width:90vw; padding:1.2em 2em; border-radius:1em; background:rgba(40,40,60,0.97); color:#fff; font-size:1.1em; box-shadow:0 8px 32px rgba(0,0,0,0.18); z-index:9999; text-align:center; letter-spacing:0.02em;"></div>
+            <script>
+                document.getElementById('contactForm').addEventListener('submit', function(e) {
+                    // For mailto forms, let the browser handle the submission
+                    setTimeout(function() {
+                        showPopupMsg("We are working at the moment, please send your message to signaturedesignschn@gmail.com.", true);
+                    }, 100);
+                });
+
+                function showPopupMsg(message, isSuccess) {
+                    const popup = document.getElementById('popupMsg');
+                    popup.textContent = message;
+                    popup.style.background = isSuccess 
+                        ? 'linear-gradient(90deg, #00c6ff 0%, #0072ff 100%)'
+                        : 'linear-gradient(90deg, #ff5858 0%, #f09819 100%)';
+                    popup.style.color = '#fff';
+                    popup.style.display = 'block';
+                    setTimeout(() => { popup.style.display = 'none'; }, 3500);
+                }
+            </script>
+        </section>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Signature Designs. All rights reserved. You Think, We Design.</p>
+    </footer>
+
+    <!-- AI Support Agent -->
+    <div class="ai-agent" id="aiAgent"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
